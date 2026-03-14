@@ -26,6 +26,7 @@
             background: var(--bg-gradient);
             min-height: 100vh;
             color: #334155;
+            padding-bottom: 40px;
         }
 
         .container { max-width: 850px; margin: 0 auto; padding: 0 20px; }
@@ -133,6 +134,33 @@
         .book-card i { font-size: 2rem; color: var(--emerald); margin-bottom: 10px; }
         .book-card h4 { margin: 0; font-size: 1rem; color: var(--primary-dark); }
 
+        /* --- Mobile Responsive (ফোনের জন্য বিশেষ কোড) --- */
+        @media (max-width: 768px) {
+            .container { padding: 0 10px; }
+            .tab-bar { gap: 8px; padding: 15px 0; }
+            .tab-btn { padding: 10px 15px; font-size: 14px; }
+            
+            .top-header { top: 5px; }
+            .glass-nav { padding: 8px 12px; border-radius: 15px; gap: 5px; }
+            
+            #surahSelect { width: 160px; font-size: 13px; padding: 8px; }
+            #bookSelect { width: 85px !important; padding: 8px; font-size: 12px; }
+            #hadithNo { width: 40px !important; padding: 8px; font-size: 12px; }
+            .font-controls { padding: 4px 8px; }
+            .font-controls span { display: none; } /* ফোনে 'ফন্ট:' লেখা লুকানো */
+
+            .hero-card { flex-direction: column-reverse; text-align: center; padding: 30px 20px; }
+            .hero-img img { width: 100px; margin-bottom: 15px; }
+            .hero-content h1 { font-size: 1.6rem; }
+
+            .card { padding: 20px 15px; border-radius: 15px; margin-bottom: 15px; }
+            .arabic { font-size: calc(var(--arabic-size) * 0.8); line-height: 1.8; }
+            .translation { padding: 15px; font-size: 0.95rem; }
+            
+            .browse-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+            .book-card { padding: 15px 10px; }
+        }
+
         .loader {
             width: 40px; height: 40px; border: 3px solid #e2e8f0;
             border-top-color: var(--emerald); border-radius: 50%;
@@ -140,13 +168,6 @@
         }
         @keyframes spin { to { transform: translate(-50%, -50%) rotate(360deg); } }
         .hidden { display: none !important; }
-
-        @media (max-width: 768px) {
-            .hero-card { flex-direction: column-reverse; text-align: center; padding: 30px; }
-            .hero-img img { width: 100px; }
-            select { width: 120px; font-size: 12px; }
-            .font-controls span { display: none; }
-        }
     </style>
 </head>
 <body>
@@ -170,7 +191,7 @@
                 </div>
 
                 <button id="backBtn" onclick="goHome()">
-                    <i class="fa-solid fa-arrow-left"></i> ফিরে যান
+                    <i class="fa-solid fa-arrow-left"></i>
                 </button>
 
                 <div id="quranSearch">
@@ -179,16 +200,16 @@
                     </select>
                 </div>
 
-                <div id="hadithSearch" class="hidden">
-                    <select id="bookSelect" style="width: 110px;">
+                <div id="hadithSearch" class="hidden" style="display: flex; gap: 5px; align-items: center;">
+                    <select id="bookSelect">
                         <option value="bukhari">বুখারী</option>
                         <option value="muslim">মুসলিম</option>
                         <option value="tirmidhi">তিরমিজী</option>
                         <option value="abudawud">আবু দাউদ</option>
-                        <option value="nasai">নাসায়ী</option>
+                        <option value="nasai">নাসায়ী</option>
                         <option value="ibnmajah">ইবনে মাজাহ</option>
                     </select>
-                    <input type="number" id="hadithNo" placeholder="নং" style="width: 50px;">
+                    <input type="number" id="hadithNo" placeholder="নং">
                     <button onclick="loadHadith()" style="border:none; background:var(--emerald); color:white; padding:8px 12px; border-radius:20px; cursor:pointer;"><i class="fa-solid fa-magnifying-glass"></i></button>
                 </div>
             </div>
@@ -230,7 +251,7 @@
                         </div>
                         <div class="book-card" onclick="browseBook('nasai')">
                             <i class="fa-solid fa-book"></i>
-                            <h4>সূনানে নাসায়ী</h4>
+                            <h4>সূনানে নাসায়ী</h4>
                         </div>
                         <div class="book-card" onclick="browseBook('ibnmajah')">
                             <i class="fa-solid fa-book"></i>
@@ -297,7 +318,7 @@
                 quranSearch.style.display = 'block';
                 hadithBrowse.classList.add('hidden');
             } else {
-                hadithSearch.style.display = 'block';
+                hadithSearch.style.display = 'flex';
                 hadithBrowse.classList.remove('hidden');
             }
             window.scrollTo(0, 0);
@@ -310,6 +331,7 @@
                 data.data.forEach(surah => {
                     const option = document.createElement('option');
                     option.value = surah.number;
+                    // আগের মতো বিস্তারিত নাম রাখা হলো
                     option.textContent = `${surah.number}. ${surah.name} (${surah.englishName})`;
                     surahSelect.appendChild(option);
                 });
@@ -357,7 +379,6 @@
             loading.classList.add('hidden');
         });
 
-        // একক হাদীস সার্চ
         async function loadHadith() {
             const book = document.getElementById('bookSelect').value;
             const no = document.getElementById('hadithNo').value;
@@ -365,7 +386,6 @@
             fetchAndRenderHadith(book, no);
         }
 
-        // নির্দিষ্ট গ্রন্থ ব্রাউজ করার ফাংশন (প্রথম ১০টি হাদীস দেখাবে)
         async function browseBook(bookCode) {
             loading.classList.remove('hidden');
             welcomeScreen.classList.add('hidden');
@@ -374,7 +394,6 @@
             hadithSearch.style.display = 'none';
 
             try {
-                // ব্রাউজ করার জন্য আমরা লুপ চালিয়ে প্রথম ৫-১০টি হাদীস লোড করতে পারি
                 for(let i=1; i<=10; i++) {
                     const bnRes = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ben-${bookCode}/${i}.json`);
                     const arRes = await fetch(`https://cdn.jsdelivr.net/gh/fawazahmed0/hadith-api@1/editions/ara-${bookCode}/${i}.json`);
